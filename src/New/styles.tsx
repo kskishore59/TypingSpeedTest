@@ -1,9 +1,10 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 export const MainContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: center;
 	width: 100%;
 	padding: 2%;
 `;
@@ -24,10 +25,13 @@ export const InputField = styled.input`
 	width: 50%;
 	padding: 0.5rem;
 	margin-bottom: 1.5rem;
+	z-index: -999;
+	opacity: 0;
+	position: absolute;
 `;
 
 export const StartButton = styled.button`
-	width: 30%;
+	width: 10rem;
 	padding: 1rem;
 	background-color: #008cba;
 	font-family: Sans-serif;
@@ -40,18 +44,20 @@ export const StartButton = styled.button`
 	&:hover {
 		border: 1px solid black;
 		border-radius: 0.2em;
+		background-color: lightgreen;
 	}
 `;
 
 export const WordsContainer = styled.div`
-	width: 80%;
 	padding: 2rem;
-	background-color: #e7e7e7;
 	font-size: 1rem;
-	font-family: Sans-serif;
 	margin-top: 2rem;
-	text: center;
-	margin-left: 5rem;
+	font-family: Comic Sans MS;
+	flex-wrap: wrap;
+	border: 1px solid grey;
+	border-radius: 0.5rem;
+	width: 80%;
+	display: flex;
 `;
 
 export const ResultContainer = styled.div`
@@ -81,8 +87,53 @@ export const ResultText = styled.p`
 	font-size: 1.5rem;
 `;
 
-export const InnerSpan = styled.span.attrs((props: { color: string }) => props)`
+const spanKeyFrames = keyframes`
+50% {
+	opacity: 1;
+}
+`;
+
+interface Span {
+	background: string;
+	active: string;
+}
+
+export const InnerSpan = styled.span.attrs((props: { color: Span }) => props)`
 	background-color: ${(props) => {
-		return props.color;
+		return props.color?.background;
 	}};
+	font-family: Rockwell;
+	font-size: 2rem;
+	position: relative;
+
+	active {
+		background: ${(props) =>
+			props.color?.active === "true" ? " #17a2b8" : ""};
+	}
+`;
+
+export const CursorDiv = styled.div`
+	flex-direction: column;
+`;
+
+export const CursorLine = styled.hr`
+	color: black;
+	width: 0.08rem;
+	height: 2rem;
+	background-color: black;
+	border: 1px solid black;
+`;
+
+export const ContentDiv = styled.div`
+	flex-wrap: wrap;
+`;
+
+export const ContentSpan = styled.span`
+	display: flex;
+`;
+
+export const SubWordsContainer = styled.div`
+	flex-wrap: wrap;
+	display: flex;
+	justify-content: space-between;
 `;

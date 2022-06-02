@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import randomWords from "random-words";
 //import * as randomWords from  "random-words";
 import {
+	ContentSpan,
 	CountDown,
 	InnerSpan,
 	InputField,
@@ -13,8 +14,10 @@ import {
 	ResultText,
 	ResultTextContainer,
 	StartButton,
+	SubWordsContainer,
 	WordsContainer,
 } from "./styles";
+import Cursor from "../Cursor";
 
 const number_of_words = 200;
 const seconds = 60;
@@ -105,9 +108,9 @@ function TypingSpeed() {
 			status !== "finished  "
 		) {
 			if (char === currChar) {
-				return "green";
+				return { background: "#50ba6c", active: "true" };
 			} else {
-				return "red";
+				return { background: "red", active: "true" };
 			}
 		} else if (
 			wordIdx === currWordIndex &&
@@ -115,7 +118,7 @@ function TypingSpeed() {
 		) {
 			return "red";
 		} else {
-			return;
+			return "";
 		}
 	};
 
@@ -143,22 +146,20 @@ function TypingSpeed() {
 
 			{status === "started" && (
 				<WordsContainer>
-					<div>
+					<SubWordsContainer>
 						{words.map((word, i) => (
-							<span key={i}>
-								<span>
-									{word.split("").map((char, idx) => (
-										<>
-											<InnerSpan color={getCharClass(i, idx, char)}>
-												{char}
-											</InnerSpan>
-										</>
-									))}
-								</span>
+							<ContentSpan key={i}>
+								{word.split("").map((char, idx) => (
+									<>
+										<InnerSpan color={getCharClass(i, idx, char)}>
+											{char}
+										</InnerSpan>
+									</>
+								))}
 								<span> </span>
-							</span>
+							</ContentSpan>
 						))}
-					</div>
+					</SubWordsContainer>
 				</WordsContainer>
 			)}
 			{status === "finished" && (
