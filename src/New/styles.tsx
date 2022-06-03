@@ -57,7 +57,6 @@ export const WordsContainer = styled.div`
 	border: 1px solid grey;
 	border-radius: 0.5rem;
 	width: 80%;
-	display: flex;
 `;
 
 export const ResultContainer = styled.div`
@@ -106,22 +105,29 @@ export const InnerSpan = styled.span.attrs((props: { color: Span }) => props)`
 	font-size: 2rem;
 	position: relative;
 
-	active {
-		background: ${(props) =>
-			props.color?.active === "true" ? " #17a2b8" : ""};
-	}
+	animation: ${spanKeyFrames} 1s ease-in-out infinite;
 `;
 
 export const CursorDiv = styled.div`
 	flex-direction: column;
 `;
 
+export const blink = keyframes`
+	50%{
+		opacity: 0
+	}
+`;
+
 export const CursorLine = styled.hr`
 	color: black;
-	width: 0.08rem;
-	height: 2rem;
+	width: 0.01rem;
+	height: 1.8rem;
 	background-color: black;
-	border: 1px solid black;
+	border: 0.08rem solid black;
+	padding: 0px;
+	margin: 0px;
+	margin-top: 2px;
+	animation: ${blink} 1s ease-in-out infinite;
 `;
 
 export const ContentDiv = styled.div`
@@ -130,10 +136,10 @@ export const ContentDiv = styled.div`
 
 export const ContentSpan = styled.span`
 	display: flex;
+	flex-wrap: wrap;
 `;
 
 export const SubWordsContainer = styled.div`
 	flex-wrap: wrap;
 	display: flex;
-	justify-content: space-between;
 `;

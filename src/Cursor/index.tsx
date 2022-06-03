@@ -8,7 +8,11 @@ type Props = {
 };
 
 const Cursor: FC<Props> = ({ index, char, currCharIndex }) => {
-	return <CursorDiv>{index === currCharIndex ? <CursorLine /> : ""}</CursorDiv>;
+	return (
+		<CursorDiv>
+			<CursorLine />
+		</CursorDiv>
+	);
 };
 
 export default Cursor;

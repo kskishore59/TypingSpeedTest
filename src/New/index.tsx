@@ -5,6 +5,7 @@ import randomWords from "random-words";
 import {
 	ContentSpan,
 	CountDown,
+	CursorLine,
 	InnerSpan,
 	InputField,
 	MainContainer,
@@ -32,6 +33,7 @@ function TypingSpeed() {
 	const [status, setStatus] = useState("waiting");
 	const [currChar, setCurrChar] = useState("");
 	const [currCharIndex, setCurrCharIndex] = useState(-1);
+	const [intervalId, setIntervalId] = useState<any>();
 	const textInput = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -72,7 +74,15 @@ function TypingSpeed() {
 					}
 				});
 			}, 1000);
+			setIntervalId(interval);
 		}
+	};
+
+	const stop = () => {
+		clearInterval(intervalId);
+		setStatus("finished");
+		setCurrInput("");
+		setCountDown(seconds);
 	};
 
 	const checkMatch = () => {
@@ -92,7 +102,12 @@ function TypingSpeed() {
 			setCurrWordIndex(currWordIndex + 1);
 			setCurrCharIndex(-1);
 		} else if (keyCode === 8) {
-			setCurrCharIndex(currCharIndex - 1);
+			if (currCharIndex > 0) {
+				setCurrCharIndex(currCharIndex - 1);
+			} else if (currCharIndex <= 0) {
+				setCurrCharIndex(words[currWordIndex - 1].length - 1);
+				setCurrWordIndex(currWordIndex - 1);
+			}
 			setCurrChar("");
 		} else {
 			setCurrCharIndex(currCharIndex + 1);
@@ -138,9 +153,13 @@ function TypingSpeed() {
 					onChange={(e) => setCurrInput(e.target.value)}
 				></InputField>
 			</div>
-			{status !== "started" && (
+			{status !== "started" ? (
 				<div>
 					<StartButton onClick={start}>Start</StartButton>
+				</div>
+			) : (
+				<div>
+					<StartButton onClick={stop}>Stop</StartButton>
 				</div>
 			)}
 
@@ -154,9 +173,17 @@ function TypingSpeed() {
 										<InnerSpan color={getCharClass(i, idx, char)}>
 											{char}
 										</InnerSpan>
+										{/* {if(currWordIndex === i && currCharIndex === idx){
+											return (<Cursor />);
+										}} */}
+										{currWordIndex === i && currCharIndex === idx ? (
+											<CursorLine />
+										) : (
+											""
+										)}
 									</>
 								))}
-								<span> </span>
+								<span>{`[space]`}</span>
 							</ContentSpan>
 						))}
 					</SubWordsContainer>
@@ -174,7 +201,10 @@ function TypingSpeed() {
 						</div>
 						<div>
 							<ResultText>
-								{Math.round((correct / (correct + incorrect)) * 100)} %{" "}
+								{correct !== 0
+									? Math.round((correct / (correct + incorrect)) * 100)
+									: 0}{" "}
+								%{" "}
 							</ResultText>
 						</div>
 					</ResultTextContainer>
