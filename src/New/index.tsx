@@ -38,7 +38,7 @@ function TypingSpeed() {
 
 	useEffect(() => {
 		const generatedWords = generateWords();
-		const newWords = generatedWords.map((each) => each + " ");
+		const newWords = generatedWords.map((each) => each);
 		console.log(newWords);
 		setWords(newWords);
 	}, []);
@@ -176,6 +176,7 @@ function TypingSpeed() {
 										<InnerSpan color={getCharClass(i, idx, char)}>
 											{char}
 										</InnerSpan>
+
 										{/* {if(currWordIndex === i && currCharIndex === idx){
 											return (<Cursor />);
 										}} */}
@@ -186,7 +187,7 @@ function TypingSpeed() {
 										)}
 									</>
 								))}
-								<span> </span>
+								<span>_</span>
 							</ContentSpan>
 						))}
 					</SubWordsContainer>

@@ -104,7 +104,7 @@ export const InnerSpan = styled.span.attrs((props: { color: Span }) => props)`
 	font-family: Rockwell;
 	font-size: 2rem;
 	position: relative;
-
+	width: full;
 	animation: ${spanKeyFrames} 1s ease-in-out infinite;
 `;
 
@@ -120,10 +120,9 @@ export const blink = keyframes`
 
 export const CursorLine = styled.hr`
 	color: black;
-	width: 0.01rem;
+	width: 0.2px;
 	height: 1.8rem;
 	background-color: black;
-	border: 0.08rem solid black;
 	padding: 0px;
 	margin: 0px;
 	margin-top: 2px;
@@ -136,6 +135,7 @@ export const ContentDiv = styled.div`
 
 export const ContentSpan = styled.div`
 	flex-wrap: wrap;
+	display: flex;
 `;
 
 export const SubWordsContainer = styled.div`
