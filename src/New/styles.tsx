@@ -134,8 +134,7 @@ export const ContentDiv = styled.div`
 	flex-wrap: wrap;
 `;
 
-export const ContentSpan = styled.span`
-	display: flex;
+export const ContentSpan = styled.div`
 	flex-wrap: wrap;
 `;
 

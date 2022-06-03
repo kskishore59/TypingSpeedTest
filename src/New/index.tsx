@@ -37,7 +37,10 @@ function TypingSpeed() {
 	const textInput = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
-		setWords(generateWords());
+		const generatedWords = generateWords();
+		const newWords = generatedWords.map((each) => each + " ");
+		console.log(newWords);
+		setWords(newWords);
 	}, []);
 
 	useEffect(() => {
@@ -183,7 +186,7 @@ function TypingSpeed() {
 										)}
 									</>
 								))}
-								<span>{`[space]`}</span>
+								<span> </span>
 							</ContentSpan>
 						))}
 					</SubWordsContainer>
