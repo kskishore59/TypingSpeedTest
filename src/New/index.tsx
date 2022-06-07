@@ -21,7 +21,7 @@ import {
 import Cursor from "../Cursor";
 
 const number_of_words = 200;
-const seconds = 60;
+const seconds = 20;
 
 function TypingSpeed() {
 	const [words, setWords] = useState<String[]>([]);
@@ -34,6 +34,7 @@ function TypingSpeed() {
 	const [currChar, setCurrChar] = useState("");
 	const [currCharIndex, setCurrCharIndex] = useState(-1);
 	const [intervalId, setIntervalId] = useState<any>();
+	const [prevCode, setPrevCode] = useState<any>();
 	const textInput = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -99,23 +100,30 @@ function TypingSpeed() {
 	};
 
 	const handleKeyDown = ({ keyCode, key }: any) => {
-		if (keyCode === 32) {
-			checkMatch();
-			setCurrInput("");
-			setCurrWordIndex(currWordIndex + 1);
-			setCurrCharIndex(-1);
-		} else if (keyCode === 8) {
-			if (currCharIndex > 0) {
-				setCurrCharIndex(currCharIndex - 1);
-			} else if (currCharIndex <= 0) {
-				setCurrCharIndex(words[currWordIndex - 1].length - 1);
-				setCurrWordIndex(currWordIndex - 1);
+		console.log(key);
+		if (key === words[currWordIndex][currCharIndex + 1]) {
+			if (keyCode === 32) {
+				checkMatch();
+				setCurrInput("");
+				if (prevCode !== 32) {
+					setCurrWordIndex(currWordIndex + 1);
+				}
+				setCurrCharIndex(-1);
+			} else if (keyCode === 8) {
+				if (currCharIndex >= 0) {
+					setCurrCharIndex(currCharIndex - 1);
+				} else if (currCharIndex <= 0) {
+					setCurrCharIndex(words[currWordIndex - 1].length - 1);
+					setCurrWordIndex(currWordIndex - 1);
+				}
+				setCurrChar("");
+			} else {
+				setCurrCharIndex(currCharIndex + 1);
+				setCurrChar(key);
 			}
-			setCurrChar("");
-		} else {
-			setCurrCharIndex(currCharIndex + 1);
-			setCurrChar(key);
 		}
+
+		setPrevCode(keyCode);
 	};
 
 	const getCharClass = (wordIdx: any, charIdx: any, char: any): any => {
