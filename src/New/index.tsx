@@ -103,7 +103,6 @@ function TypingSpeed() {
 		console.log(key);
 		if (key === words[currWordIndex][currCharIndex + 1]) {
 			if (keyCode === 32) {
-				checkMatch();
 				setCurrInput("");
 				if (prevCode !== 32) {
 					setCurrWordIndex(currWordIndex + 1);
@@ -121,6 +120,19 @@ function TypingSpeed() {
 				setCurrCharIndex(currCharIndex + 1);
 				setCurrChar(key);
 			}
+		} else if (keyCode === 32) {
+			checkMatch();
+			setCurrWordIndex(currWordIndex + 1);
+			setCurrCharIndex(-1);
+			setCurrInput("");
+		} else if (keyCode === 8) {
+			if (currCharIndex >= 0) {
+				setCurrCharIndex(currCharIndex - 1);
+			} else if (currCharIndex <= 0) {
+				setCurrCharIndex(words[currWordIndex - 1].length - 1);
+				setCurrWordIndex(currWordIndex - 1);
+			}
+			setCurrChar("");
 		}
 
 		setPrevCode(keyCode);
