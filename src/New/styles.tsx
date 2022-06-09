@@ -95,12 +95,16 @@ const spanKeyFrames = keyframes`
 interface Span {
 	background: string;
 	active: string;
+	color: string;
 }
 
 export const InnerSpan = styled.span.attrs((props: { color: Span }) => props)`
 	background-color: ${(props) => {
 		return props.color?.background;
 	}};
+	color: ${(props) => {
+		return props.color?.color;
+	}}
 	font-family: Rockwell;
 	font-size: 2rem;
 	position: relative;
@@ -120,7 +124,7 @@ export const blink = keyframes`
 
 export const CursorLine = styled.hr`
 	color: black;
-	width: 0.2px;
+	width: 1px;
 	height: 1.8rem;
 	background-color: black;
 	padding: 0px;

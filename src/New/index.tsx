@@ -21,11 +21,11 @@ import {
 import Cursor from "../Cursor";
 
 const number_of_words = 200;
-const seconds = 20;
+const seconds = 0;
 
 function TypingSpeed() {
 	const [words, setWords] = useState<String[]>([]);
-	const [countDown, setCountDown] = useState<number>(seconds);
+	const [countDown, setCountDown] = useState<number>(0);
 	const [currInput, setCurrInput] = useState("");
 	const [currWordIndex, setCurrWordIndex] = useState(0);
 	const [correct, setCorrect] = useState(0);
@@ -35,6 +35,8 @@ function TypingSpeed() {
 	const [currCharIndex, setCurrCharIndex] = useState(-1);
 	const [intervalId, setIntervalId] = useState<any>();
 	const [prevCode, setPrevCode] = useState<any>();
+	const [correctWords, setCorrectWords] = useState<number>(0);
+	const [key, setKey] = useState<number>(0);
 	const textInput = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -62,19 +64,19 @@ function TypingSpeed() {
 			setIncorrect(0);
 			setCurrCharIndex(-1);
 			setCurrChar("");
+			setCorrectWords(0);
 		}
-		if (status !== "started") {
+		if (status !== "started" && countDown <= 60) {
 			setStatus("started");
 			let interval = setInterval(() => {
 				setCountDown((prev): number => {
-					if (prev === 0) {
+					if (prev === 60) {
 						clearInterval(interval);
 						setStatus("finished");
 						setCurrInput("");
-
 						return seconds;
 					} else {
-						return prev - 1;
+						return prev + 1;
 					}
 				});
 			}, 1000);
@@ -87,6 +89,7 @@ function TypingSpeed() {
 		setStatus("finished");
 		setCurrInput("");
 		setCountDown(seconds);
+		setCorrectWords(0);
 	};
 
 	const checkMatch = () => {
@@ -100,39 +103,18 @@ function TypingSpeed() {
 	};
 
 	const handleKeyDown = ({ keyCode, key }: any) => {
-		console.log(key);
-		if (key === words[currWordIndex][currCharIndex + 1]) {
-			if (keyCode === 32) {
-				setCurrInput("");
-				if (prevCode !== 32) {
-					setCurrWordIndex(currWordIndex + 1);
-				}
-				setCurrCharIndex(-1);
-			} else if (keyCode === 8) {
-				if (currCharIndex >= 0) {
-					setCurrCharIndex(currCharIndex - 1);
-				} else if (currCharIndex <= 0) {
-					setCurrCharIndex(words[currWordIndex - 1].length - 1);
-					setCurrWordIndex(currWordIndex - 1);
-				}
-				setCurrChar("");
-			} else {
-				setCurrCharIndex(currCharIndex + 1);
-				setCurrChar(key);
-			}
-		} else if (keyCode === 32) {
-			checkMatch();
-			setCurrWordIndex(currWordIndex + 1);
-			setCurrCharIndex(-1);
+		if (keyCode === 32) {
 			setCurrInput("");
-		} else if (keyCode === 8) {
-			if (currCharIndex >= 0) {
-				setCurrCharIndex(currCharIndex - 1);
-			} else if (currCharIndex <= 0) {
-				setCurrCharIndex(words[currWordIndex - 1].length - 1);
-				setCurrWordIndex(currWordIndex - 1);
+			if (prevCode !== 32) {
+				setCurrWordIndex(currWordIndex + 1);
+				setKey(32);
 			}
-			setCurrChar("");
+			setCorrectWords(correctWords + 1);
+			setCurrCharIndex(-1);
+		} else if (key === words[currWordIndex][currCharIndex + 1]) {
+			setCurrCharIndex(currCharIndex + 1);
+			setCurrChar(key);
+			setKey(keyCode);
 		}
 
 		setPrevCode(keyCode);
@@ -146,7 +128,7 @@ function TypingSpeed() {
 			status !== "finished  "
 		) {
 			if (char === currChar) {
-				return { background: "#50ba6c", active: "true" };
+				return { background: "#50ba6c", active: "true", color: "grey" };
 			} else {
 				return { background: "red", active: "true" };
 			}
@@ -171,7 +153,22 @@ function TypingSpeed() {
 					disabled={status !== "started"}
 					ref={textInput}
 					type="text"
-					onKeyDown={handleKeyDown}
+					onKeyDown={(event) => {
+						if (event.key === "Backspace") {
+							event.preventDefault();
+							event.stopPropagation();
+						} else if (
+							event.key !== words[currWordIndex][currCharIndex + 1] &&
+							event.key !== " "
+						) {
+							event.preventDefault();
+							event.stopPropagation();
+							setIncorrect(incorrect + 1);
+						} else {
+							handleKeyDown(event);
+							setCorrect(correct + 1);
+						}
+					}}
 					value={currInput}
 					onChange={(e) => setCurrInput(e.target.value)}
 				></InputField>
@@ -191,22 +188,40 @@ function TypingSpeed() {
 					<SubWordsContainer>
 						{words.map((word, i) => (
 							<ContentSpan key={i}>
-								{word.split("").map((char, idx) => (
-									<>
-										<InnerSpan color={getCharClass(i, idx, char)}>
-											{char}
-										</InnerSpan>
+								{word.split("").map((char, idx) => {
+									//console.log(char);
+									return (
+										<>
+											{/* {currChar === words[currWordIndex][currCharIndex] ? (
+												<CursorLine />
+											) : (
+												""
+											)} */}
+											{key === 32 &&
+											currCharIndex === idx - 1 &&
+											currWordIndex === i ? (
+												<CursorLine />
+											) : (
+												""
+											)}
 
-										{/* {if(currWordIndex === i && currCharIndex === idx){
-											return (<Cursor />);
-										}} */}
-										{currWordIndex === i && currCharIndex === idx ? (
-											<CursorLine />
-										) : (
-											""
-										)}
-									</>
-								))}
+											<InnerSpan color={getCharClass(i, idx, char)}>
+												{char}
+											</InnerSpan>
+
+											{/* {if(currWordIndex === i && currCharIndex === idx){
+												return (<Cursor />);
+											}} */}
+											{currWordIndex === i &&
+											currCharIndex === idx &&
+											key !== 32 ? (
+												<CursorLine />
+											) : (
+												""
+											)}
+										</>
+									);
+								})}
 								<span>_</span>
 							</ContentSpan>
 						))}
@@ -217,7 +232,7 @@ function TypingSpeed() {
 				<ResultContainer>
 					<ResultTextContainer>
 						<ResultHeading>Words Per Minute</ResultHeading>
-						<ResultText>{correct}</ResultText>
+						<ResultText>{correctWords}</ResultText>
 					</ResultTextContainer>
 					<ResultTextContainer>
 						<div>
