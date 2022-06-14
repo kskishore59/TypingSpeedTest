@@ -23,6 +23,10 @@ import Cursor from "../Cursor";
 const number_of_words = 200;
 const seconds = 0;
 
+interface Color {
+	color: string;
+}
+
 function TypingSpeed() {
 	const [words, setWords] = useState<String[]>([]);
 	const [countDown, setCountDown] = useState<number>(0);
@@ -36,6 +40,7 @@ function TypingSpeed() {
 	const [intervalId, setIntervalId] = useState<any>();
 	const [prevCode, setPrevCode] = useState<any>();
 	const [correctWords, setCorrectWords] = useState<number>(0);
+	const [color, setColor] = useState<Color[]>([]);
 	const [key, setKey] = useState<number>(0);
 	const textInput = useRef<HTMLInputElement>(null);
 
@@ -66,11 +71,11 @@ function TypingSpeed() {
 			setCurrChar("");
 			setCorrectWords(0);
 		}
-		if (status !== "started" && countDown <= 60) {
+		if (status !== "started" && countDown <= 20) {
 			setStatus("started");
 			let interval = setInterval(() => {
 				setCountDown((prev): number => {
-					if (prev === 60) {
+					if (prev === 20) {
 						clearInterval(interval);
 						setStatus("finished");
 						setCurrInput("");
@@ -103,7 +108,7 @@ function TypingSpeed() {
 	};
 
 	const handleKeyDown = ({ keyCode, key }: any) => {
-		if (keyCode === 32) {
+		if (keyCode === 32 && currCharIndex === words[currWordIndex].length - 1) {
 			setCurrInput("");
 			if (prevCode !== 32) {
 				setCurrWordIndex(currWordIndex + 1);
@@ -128,9 +133,11 @@ function TypingSpeed() {
 			status !== "finished  "
 		) {
 			if (char === currChar) {
+				//const newColor = {words[wordIdx][charIdx]: true}
+				//setColor((prev) => [...prev]);3
 				return { background: "#50ba6c", active: "true", color: "grey" };
 			} else {
-				return { background: "red", active: "true" };
+				return { background: "red" };
 			}
 		} else if (
 			wordIdx === currWordIndex &&

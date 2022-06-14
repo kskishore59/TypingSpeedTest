@@ -124,8 +124,8 @@ export const blink = keyframes`
 
 export const CursorLine = styled.hr`
 	color: black;
-	width: 1px;
-	height: 1.8rem;
+	width: 1.2px;
+	height: 2.2rem;
 	background-color: black;
 	padding: 0px;
 	margin: 0px;
